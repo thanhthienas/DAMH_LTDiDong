@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DAMH_LTDD.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialIdentityModel : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,7 +38,9 @@ namespace DAMH_LTDD.Migrations
                     Height = table.Column<int>(type: "int", nullable: true),
                     Weight = table.Column<float>(type: "real", nullable: true),
                     Date_of_birth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Sex = table.Column<bool>(type: "bit", nullable: false),
+                    Sex = table.Column<bool>(type: "bit", nullable: true),
+                    Demand = table.Column<bool>(type: "bit", nullable: true),
+                    Recommend = table.Column<bool>(type: "bit", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -57,6 +59,23 @@ namespace DAMH_LTDD.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BodyDatas",
+                schema: "identity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    sex = table.Column<bool>(type: "bit", nullable: false),
+                    Date_of_birth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Height = table.Column<int>(type: "int", nullable: true),
+                    Weight = table.Column<float>(type: "real", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BodyDatas", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -286,17 +305,15 @@ namespace DAMH_LTDD.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExerciseId = table.Column<int>(type: "int", nullable: false),
                     DaysOfTheWeekId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ExerciseList", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExerciseList_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_ExerciseList_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalSchema: "identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
@@ -305,13 +322,6 @@ namespace DAMH_LTDD.Migrations
                         column: x => x.DaysOfTheWeekId,
                         principalSchema: "identity",
                         principalTable: "DaysOfTheWeeks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ExerciseList_Exercise_ExerciseId",
-                        column: x => x.ExerciseId,
-                        principalSchema: "identity",
-                        principalTable: "Exercise",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -327,16 +337,14 @@ namespace DAMH_LTDD.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Meal_Time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DaysOfTheWeekId = table.Column<int>(type: "int", nullable: false),
-                    FoodId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MealList", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MealList_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_MealList_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalSchema: "identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
@@ -347,11 +355,58 @@ namespace DAMH_LTDD.Migrations
                         principalTable: "DaysOfTheWeeks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExerciseListExercises",
+                schema: "identity",
+                columns: table => new
+                {
+                    ExerciseListId = table.Column<int>(type: "int", nullable: false),
+                    ExerciseId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExerciseListExercises", x => new { x.ExerciseListId, x.ExerciseId });
                     table.ForeignKey(
-                        name: "FK_MealList_Foods_FoodId",
+                        name: "FK_ExerciseListExercises_ExerciseList_ExerciseListId",
+                        column: x => x.ExerciseListId,
+                        principalSchema: "identity",
+                        principalTable: "ExerciseList",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExerciseListExercises_Exercise_ExerciseId",
+                        column: x => x.ExerciseId,
+                        principalSchema: "identity",
+                        principalTable: "Exercise",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MealListFoods",
+                schema: "identity",
+                columns: table => new
+                {
+                    MealListId = table.Column<int>(type: "int", nullable: false),
+                    FoodId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MealListFoods", x => new { x.MealListId, x.FoodId });
+                    table.ForeignKey(
+                        name: "FK_MealListFoods_Foods_FoodId",
                         column: x => x.FoodId,
                         principalSchema: "identity",
                         principalTable: "Foods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MealListFoods_MealList_MealListId",
+                        column: x => x.MealListId,
+                        principalSchema: "identity",
+                        principalTable: "MealList",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -415,16 +470,16 @@ namespace DAMH_LTDD.Migrations
                 column: "DaysOfTheWeekId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExerciseList_ExerciseId",
+                name: "IX_ExerciseList_UserId",
                 schema: "identity",
                 table: "ExerciseList",
-                column: "ExerciseId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExerciseList_UserId1",
+                name: "IX_ExerciseListExercises_ExerciseId",
                 schema: "identity",
-                table: "ExerciseList",
-                column: "UserId1");
+                table: "ExerciseListExercises",
+                column: "ExerciseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Foods_CategoryFoodId",
@@ -439,16 +494,16 @@ namespace DAMH_LTDD.Migrations
                 column: "DaysOfTheWeekId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MealList_FoodId",
+                name: "IX_MealList_UserId",
                 schema: "identity",
                 table: "MealList",
-                column: "FoodId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MealList_UserId1",
+                name: "IX_MealListFoods_FoodId",
                 schema: "identity",
-                table: "MealList",
-                column: "UserId1");
+                table: "MealListFoods",
+                column: "FoodId");
         }
 
         /// <inheritdoc />
@@ -475,11 +530,15 @@ namespace DAMH_LTDD.Migrations
                 schema: "identity");
 
             migrationBuilder.DropTable(
-                name: "ExerciseList",
+                name: "BodyDatas",
                 schema: "identity");
 
             migrationBuilder.DropTable(
-                name: "MealList",
+                name: "ExerciseListExercises",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "MealListFoods",
                 schema: "identity");
 
             migrationBuilder.DropTable(
@@ -487,19 +546,19 @@ namespace DAMH_LTDD.Migrations
                 schema: "identity");
 
             migrationBuilder.DropTable(
+                name: "ExerciseList",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
                 name: "Exercise",
                 schema: "identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers",
-                schema: "identity");
-
-            migrationBuilder.DropTable(
-                name: "DaysOfTheWeeks",
-                schema: "identity");
-
-            migrationBuilder.DropTable(
                 name: "Foods",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "MealList",
                 schema: "identity");
 
             migrationBuilder.DropTable(
@@ -508,6 +567,14 @@ namespace DAMH_LTDD.Migrations
 
             migrationBuilder.DropTable(
                 name: "CategoryFood",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "DaysOfTheWeeks",
                 schema: "identity");
         }
     }

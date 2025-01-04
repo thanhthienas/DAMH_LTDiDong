@@ -13,5 +13,7 @@
         public string? Meal { get; set; } // loại món ăn : món khai vị, món chính, món tráng miệng
         public int CategoryFoodId { get; set; }
         public CategoryFood? CategoryFood { get; set; }
+        // Quan hệ nhiều-nhiều với MealList thông qua MealListFood
+        public ICollection<MealListFood>? MealListFoods { get; set; }
     }
 }
