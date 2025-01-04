@@ -12,6 +12,7 @@
         public int? Reps { get; set; } // Số rep thực hiện vd: 1 rep là 10 lần nâng tạ
         public int CategoryExerciseId { get; set; }
         public CategoryExercise? CategoryExercise { get; set; }
-        public List<ExerciseList>? ExerciseList { get; set; }
+        // Quan hệ nhiều-nhiều với ExerciseList thông qua ExerciseListExercise
+        public ICollection<ExerciseListExercise>? ExerciseListExercises { get; set; }
     }
 }

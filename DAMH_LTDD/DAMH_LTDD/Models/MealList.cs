@@ -8,9 +8,11 @@
         public DateTime Meal_Time { get; set; }
         public int DaysOfTheWeekId { get; set; }
         public DaysOfTheWeek? DaysOfTheWeek { get; set; }
-        public int FoodId { get; set; }
-        public Food? Food { get; set; }
-        public int UserId { get; set; }
+        public string? UserId { get; set; }
         public User? User { get; set; }
+
+
+        // Quan hệ nhiều-nhiều với Food thông qua MealListFood
+        public ICollection<MealListFood>? MealListFoods { get; set; }
     }
 }
