@@ -22,7 +22,7 @@ class AdminScreen extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          'Welcome, Admin!',
+          'Welcome, Admin',
           style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
